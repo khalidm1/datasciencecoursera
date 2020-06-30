@@ -1,0 +1,32 @@
+# Plot the 30-day mortality rates for heart attack
+outcome <- read.csv("C:/Users/khali/Desktop/Data Science/Big Data/datasciencecoursera/R Programming coursera/W4/Programming Assignment 3 Hospital Quality/ProgAssignment3-data/outcome-of-care-measures.csv", colClasses = "character")
+head(outcome)
+
+outcome[, 11] <- as.numeric(outcome[, 11])
+hist(outcome[, 11])
+
+
+# Finding the best hospital in a state
+best <- function(state, outcome) {
+  outcome <- read.csv("C:/Users/khali/Desktop/Data Science/Big Data/datasciencecoursera/R Programming coursera/W4/Programming Assignment 3 Hospital Quality/ProgAssignment3-data/outcome-of-care-measures.csv", colClasses = "character")
+  newOutcome <- outcome[, c(2, 7, 11, 17, 23)]
+  colnames(newOutcome) <- c('Hospital', 'State', 'heart attack', 'heart failure', 'pneumonia')
+  
+  
+  if (state %in% outcomeData[, 2] == FALSE) {
+    stop('invalid state')
+  }
+  
+  if (outcome %in% colnames(outcomeData)[3:5] == FALSE){
+    stop('invalid outcome')
+  }
+  
+  selectData <- outcomeData[outcomeData$State == state, c('Hospital', 'State', outcome)]
+  
+  selectData <- selectData[order(selectData$Hospital, decreasing = F), ]
+  
+  selectData[, 3] <- suppressWarnings(as.numeric(selectData[, 3]))
+  
+  return(selectData[which.min(selectData[, 3]), 1]) 
+}
+best("TX", "heart attack")
