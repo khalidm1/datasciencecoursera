@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1593540838551.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3773823129",
+    "id" : "1FF4DE0",
+    "lastKnownWriteTime" : 1593544338,
+    "last_content_update" : 1593544338735,
+    "path" : "C:/Users/khali/Desktop/Data Science/Big Data/R Programming coursera/W3/W3 Q1.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "21,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

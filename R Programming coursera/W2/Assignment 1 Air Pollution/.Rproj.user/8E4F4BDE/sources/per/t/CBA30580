@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1593543288494.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1149349791",
+    "id" : "CBA30580",
+    "lastKnownWriteTime" : 1593544334,
+    "last_content_update" : 1593544335984,
+    "path" : "C:/Users/khali/Desktop/Data Science/Big Data/R Programming coursera/W3/Programming Assignment 2 Lexical Scoping.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "36,19",
+        "scrollLine" : "26",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
