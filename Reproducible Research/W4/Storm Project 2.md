@@ -10,5 +10,5 @@ date: "7/9/2020"
 
 
 ## This Reproducible Reasearch Project is all about answering theses 2 questions:
-- Across the United States, which types of events (as indicated in the \color{red}{\verb|EVTYPE|}EVTYPE variable) are most harmful with respect to population health?
+- Across the United States, which types of events (as indicated in the  variable) are most harmful with respect to population health?
 - Across the United States, which types of events have the greatest economic consequences?
