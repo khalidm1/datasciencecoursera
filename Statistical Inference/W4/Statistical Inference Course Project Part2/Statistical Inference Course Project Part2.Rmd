@@ -1,0 +1,187 @@
+---
+title: "Statistical Inference Course Project Part2"
+author: "Khalid"
+date: "7/11/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+# **Part Two**
+
+### The project consists of two parts:
+  - A simulation exercise.
+  - **Basic inferential data analysis**.
+  
+```{r}
+
+```
+
+    1. Load the ToothGrowth data and perform some basic exploratory data analyses
+    2. Provide a basic summary of the data.
+    3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose. (Only use the techniques from class, even if there's other approaches worth considering)
+    4. State your conclusions and the assumptions needed for your conclusions.
+
+    
+
+
+
+### Load the ToothGrowth data and perform some basic exploratory data analyses
+
+
+#### Install & Load needed packages
+```{r}
+data("ToothGrowth")
+
+library(dplyr)
+library(datasets)
+data(ToothGrowth)
+library(ggplot2)
+library(cowplot)
+```
+   
+#### Load the ToothGrowth data and perform some basic exploratory data analyses
+
+```{r}
+ToothGrowth %>% group_by(supp, dose) %>%
+                summarise(meanLength = mean(len), medianLength = median(len), sdLength = sd(len))
+```
+
+
+
+```{r}
+summary(ToothGrowth)
+```
+
+ 
+```{r}
+head(ToothGrowth)
+```
+ 
+
+
+### visualization
+```{r}
+ggplot(ToothGrowth, aes(factor(dose), len, fill = factor(dose))) +
+      geom_boxplot() +
+      # facet_grid(.~supp)+
+      facet_grid(.~supp, labeller = as_labeller(
+            c("OJ" = "Orange juice", 
+              "VC" = "Ascorbic Acid"))) +
+      labs(title = "Tooth growth of 60 guinea pigs 
+           by dosage and\nby delivery method of vitamin C",
+           x = "Dose in milligrams/day", 
+           y = "Tooth Lengh") +
+      scale_fill_discrete(name = "Dosage of\nvitamin C\nin mg/day")
+```
+
+```{r}
+ggplot(data = ToothGrowth, aes(x = supp, y = len, fill = supp)) +
+        geom_boxplot() +
+        geom_point() +
+        facet_grid(. ~ dose) +
+        xlab('Supplement type') +
+        ylab('Tooth length') +
+        ggtitle('Tooth growth of varying doses and supplement type in guinea pigs') +
+        scale_fill_brewer(palette = 'Pastel1',
+                          labels = c('Orange juice', 'Vitamin C'),
+                          name = 'Supplement type')
+```
+
+```{r}
+low_dose <- ToothGrowth[ToothGrowth$dose == 0.5, ]
+mid_dose <- ToothGrowth[ToothGrowth$dose == 1, ]
+h_dose <- ToothGrowth[ToothGrowth$dose == 2, ]
+```
+#### hypothesis testing for low dose (0.5mg/day)
+```{r}
+t.test(low_dose$len ~ low_dose$supp, alternative = 'two.sided', paired = F, var.equal = F)$p.value
+```
+
+#### hypothesis testing for medium  dose (0.5mg/day)
+```{r}
+t.test(mid_dose$len ~ mid_dose$supp, 
+       alternative = 'two.sided', paired = F, var.equal = F, conf.level = 0.95)$p.value
+```
+
+#### Perform hypothesis testing for high dose (2mg/day)
+```{r}
+t.test(h_dose$len ~ h_dose$supp, 
+       alternative = 'two.sided', paired = F, var.equal = F, conf.level = 0.95)$p.value
+```
+
+#### Hypothesis testing: difference in tooth growth treated with different doses of supplements
+
+    - there is no difference in tooth growth in guinea pigs treated with different doses of orange juice or vitamin C
+    - there is a difference in tooth growth in guinea pigs treated with different doses of orange juice or vitamin C
+    - Type 1 Error rate is less than 0.05 (p<0.05)
+
+
+#### Perform hypothesis testing for orange juice at different doses Three different doses are compared to each other. The family-wise error rate will be controlled using the Bonferroni correction to adjust the p-value
+```{r}
+orange_j <- ToothGrowth[ToothGrowth$supp == 'OJ', ]
+orange_j_lm <- orange_j[orange_j$dose <= 1, ]
+orange_j_lh <- orange_j[orange_j$dose != 1, ]
+orange_j_mh <- orange_j[orange_j$dose >= 1, ]
+
+
+vitamin_c <- ToothGrowth[ToothGrowth$supp == 'VC', ]
+vitamin_c_lm <- vitamin_c[vitamin_c$dose <= 1, ]
+vitamin_c_lh <- vitamin_c[vitamin_c$dose != 1, ]
+vitamin_c_mh <- vitamin_c[vitamin_c$dose >= 1, ]
+```
+
+Perform hypothesis testing for orange juice at different doses
+
+    Three different doses are compared to each other. The family-wise error rate will be controlled using the Bonferroni correction to adjust the p-value
+
+```{r}
+orange_j_lm_p <- t.test(orange_j_lm$len ~ orange_j_lm$dose, alternative = 'two.sided', paired = F, var.equal = F)$p.value
+
+orange_j_lh_p <- t.test(orange_j_lh$len ~ orange_j_lh$dose, alternative = 'two.sided', paired = F, var.equal = F)$p.value
+
+orange_j_mh_p <- t.test(orange_j_mh$len ~ orange_j_mh$dose, alternative = 'two.sided', paired = F, var.equal = F)$p.value
+
+data.frame(comparisons = c('0.5 vs 1', '0.5 vs 2', '1 vs 2'),
+           pvalue = c(orange_j_lm_p, orange_j_lh_p, orange_j_mh_p),
+           bonferroni = p.adjust(c(orange_j_lm_p, orange_j_lh_p, orange_j_mh_p), method = 'bonferroni'))
+```
+
+#low vs medium dose
+```{r}
+lowvc_lm_p <- t.test(vitamin_c_lm$len ~ vitamin_c_lm$dose, alternative = 'two.sided', 
+                  paired = F, var.equal = F, conf.level = 0.95)$p.value
+```
+
+#low vs high dose
+
+```{r}
+lowvc_lh_p <- t.test(vitamin_c_lh$len ~ vitamin_c_lh$dose, alternative = 'two.sided',
+                  paired = F, var.equal = F, conf.level = 0.95)$p.value
+```
+
+#medium vs high dose
+```{r}
+lowvc_mh_p <- t.test(vitamin_c_mh$len ~ vitamin_c_mh$dose, alternative = 'two.sided',
+                  paired = F, var.equal = F, conf.level = 0.95)$p.value
+```
+
+
+
+```{r}
+data.frame(comparisons = c('0.5 vs 1', '0.5 vs 2', '1 vs 2'),
+           pvalue = c(lowvc_lm_p, lowvc_lh_p, lowvc_mh_p),
+           bonferroni = p.adjust(c(lowvc_lm_p, lowvc_lh_p, lowvc_mh_p), method = 'bonferroni'))
+```
+
+
+
+    the Tooth Growth in guinea pigs treated, there is a does-dependent effect in that the higher the dose is, the longer the tooth length is. Whether this relationship is linear requires further exploration.
+
+
+
+
+
+
+
+
+
