@@ -35,8 +35,8 @@ choose(4, 3)*0.5^4 + choose(4, 4)*0.5^4
 
 
 # 2
-choise1 <- 4
-choise2 <- 3
+choice1 <- 4
+choice2 <- 3
 p <- 0.5
 pbinom(choise2-1, size = n, prob = p, lower.tail = F)
 
@@ -63,20 +63,21 @@ pvalue
 # Does the change in BMI appear to differ between the treated and placebo groups? 
 # Assuming normality of the underlying data and a common population variance, give a p-value for a two sided t test.
 
+
 # diet pills
 obese_Subject <- 9
 treated_Group <- -3
 sd1 <- 1.5**2
 
 # placebo
-obese_Subject2 <- 9
+placebo_Subject <- 9
 placebo_Group <- 1
 sd2 <- 1.8**2
 
 ci <- 0.95
 a <- ci + (1 - ci) / 2
-sp <- sqrt(((obese_Subject2-1) * sd2 + (obese_Subject-1) * sd1) / (obese_Subject2 + obese_Subject - 2)) 
-pt((treated_Group - placebo_Group) / (sp * sqrt(1 / obese_Subject + 1 / obese_Subject2)), df = obese_Subject2 + obese_Subject - 2)
+sp <- sqrt(((placebo_Subject-1) * sd2 + (obese_Subject-1) * sd1) / (placebo_Subject + obese_Subject - 2)) 
+pt((treated_Group - placebo_Group) / (sp * sqrt(1 / obese_Subject + 1 / placebo_Subject)), df = placebo_Subject + obese_Subject - 2)
 
 
 
