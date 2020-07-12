@@ -1,0 +1,226 @@
+---
+title: "W4 Project2 NOAA storm database"
+author: "Khalid"
+date: "7/12/2020"
+output: html_document
+---
+
+### Your data analysis must address the following questions:
+
+    1. Across the United States, which types of events (as indicated in the color red  variable) are most 
+       harmful with respect to population health?
+    2. Across the United States, which types of events have the greatest economic consequences?
+    
+     Consider writing your report as if it were to be read by a   
+     government or municipal manager who might be responsible for 
+     preparing for severe weather events and will need to 
+     prioritize resources for different types of events. However, 
+     there is no need to make any specific recommendations in your 
+     report.
+### Load the libraries
+
+```{r}
+library(dplyr)
+library("data.table")
+library("ggplot2")
+```
+
+
+### Download and extract the data into a dataframe.Then convert to a data.table
+
+```{r}
+fileUrl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
+download.file(fileUrl, destfile = paste0(getwd(), '/Storm.csv.bz2'), method = 'curl', quiet = T)
+storm_DB <- read.csv('Storm.csv.bz2', stringsAsFactors = F)
+
+```
+### Converting data.frame to data.table
+```{r}
+storm_DB <- as.data.table(storm_DB)
+
+```
+### Examining DATA
+```{r}
+names(storm_DB)
+```
+### OR 
+```{r}
+colnames(storm_DB)
+```
+
+
+### Subset the dataset on the parameters that we need and remove unneeded columns.
+
+    - EVTYPE: event type  
+    - FATALITIES: number of fatalities  
+    - INJURIES: number of injuries  
+    - PROPDMG: property damage (dollars)  
+    - PROPDMGEXP: magnitude of property damage (K = thousands, M =       millions, B = billions)  
+    - CROPDMG: crop damage (dollars)  
+    - CROPDMGEXP: magnitude of crop damage (H = hundreds, K =    
+    thousands, M = millions, B = billions)
+### Select columns
+```{r}
+col_select <- c('EVTYPE', 'FATALITIES', 'INJURIES', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP')
+
+storm1 <- storm_DB[, ..col_select]
+summary(storm1)
+```
+
+
+### Find types of events that are most harmful with respect to population health
+```{r}
+
+stormDB <- storm1[, 1:3] %>% group_by(EVTYPE) %>% summarise_all(sum)
+
+```
+
+```{r}
+summary(stormDB)
+```
+### Top 10 events caused death
+```{r}
+top10Death <- stormDB[order(stormDB$FATALITIES, decreasing = T), ]
+head(top10Death)
+```
+
+### Top 10 events caused injuries
+```{r}
+top10inj <- stormDB[order(stormDB$INJURIES, decreasing = T), ]
+head(top10inj)
+
+```
+### Top 10 events caused both death & injuries
+```{r}
+stormDB$total <- rowSums(stormDB[, 2:3])
+top10both <- stormDB[order(stormDB$total, decreasing = T), ]
+top10both[1:10,]
+```
+
+```{r}
+head(top10both)
+```
+
+
+### numbers, characters are all represent factors
+
+```{r}
+unique(storm1$PROPDMGEXP)
+```
+
+
+
+### a function to transform 
+```{r}
+getv <- function(EXP_Type) {
+  if (EXP_Type %in% c('h', 'H')) {
+    return(2)
+          
+  } else if (EXP_Type %in% c('k', 'K')) {
+    return(3)
+          
+  } else if (EXP_Type %in% c('m', 'M')) {
+    return(6)
+          
+  } else if (EXP_Type %in% c('b', 'B')) {
+    return(9)
+          
+  } else if (suppressWarnings(!is.na(as.numeric(EXP_Type)))) {
+    
+    return(as.numeric(EXP_Type))
+          
+  } else {
+    return(0)
+  }
+}
+c(10**getv('h'), 10**getv(4), 10**getv('B'), 10**getv('?'))
+```
+### Make a table & Put Result into a Table
+```{r}
+newST <- storm1[, c(1, 4:7)] %>%
+  rowwise() %>%
+  mutate(PROP = PROPDMG*10**getv(PROPDMGEXP), 
+         CROP = CROPDMG*10**getv(CROPDMGEXP))
+
+```
+
+
+```{r}
+head(newST)
+```
+
+```{r}
+newST_Sum <- newST[, c(1, 6, 7)] %>%
+  group_by(EVTYPE) %>%
+  summarise_all(sum)
+```
+
+```{r}
+summary(newST_Sum)
+```
+
+```{r}
+
+```
+
+### top 10 events that causes the most damages
+```{r}
+topP <- newST_Sum[order(newST_Sum$PROP, decreasing = T), ]
+```
+
+
+### top 10 events that causes the most crop damages
+```{r}
+topCrop <- newST_Sum[order(newST_Sum$CROP, decreasing = T), ]
+```
+
+### combine the top 10 most damages & crop damages
+```{r}
+newST_Sum$total <- rowSums(newST_Sum[, 2:3])
+combine_top <- newST_Sum[order(newST_Sum$total, decreasing = T), ]
+```
+
+```{r}
+top10Death[1:10,]
+
+```
+
+```{r}
+top10inj[1:10,]
+```
+
+
+```{r}
+top10both[1:10,]
+```
+
+
+```{r}
+ggplot(data = top10both[1:10,], aes(x = reorder(EVTYPE, total), y = total)) +
+  geom_bar(stat = 'Identity') +
+  coord_flip() +
+  xlab('Event Type') +
+  ylab('Total Injuries and Fatalities') +
+  ggtitle('Top 10 weather events that causes population health hazards') +
+  theme_classic()
+```
+
+
+```{r}
+ggplot(data = combine_top[1:10,], aes(x = reorder(EVTYPE, total), y = total)) + 
+  geom_bar(stat = 'Identity') +
+  coord_flip() +
+  scale_y_continuous(trans = 'log10') +
+  xlab('Event   Type') +
+  ylab('Total property and crop damages (log10)') +
+  ggtitle('Top 10 Weather events that causes Economic Hazards') +
+  theme_classic()
+```
+```{r}
+summary(combine_top)
+```
+
+
+
+
+
