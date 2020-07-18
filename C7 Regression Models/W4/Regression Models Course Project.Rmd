@@ -1,0 +1,171 @@
+---
+title: "Regression Models Course Project"
+author: "Khalid"
+date: "7/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### You work for Motor Trend, a magazine about the automobile industry. Looking at a data set of a collection of cars, they are interested in exploring the relationship between a set of variables and miles per gallon (MPG) (outcome). They are particularly interested in the following two questions:
+
+    “Is an automatic or manual transmission better for MPG”
+    "Quantify the MPG difference between automatic and manual    
+     transmissions"
+
+
+
+
+```{r}
+data("mtcars")
+library(ggplot2)
+library(dplyr)
+```
+
+### manual transmission has higher mean of miles per gallon
+```{r}
+auto_mpg <- mtcars %>% select(mpg, am) %>% mutate(am = as.factor(am))
+ggplot(data = auto_mpg, aes(x = am, y = mpg)) +
+        geom_boxplot() + geom_point() +
+        xlab('Transmission (0 = automatic, 1 = manual)') + 
+        ylab('Miles/(US) gallon')
+```
+
+### p-value less than 5% in the full model
+```{r}
+D <- mtcars %>% mutate(cyl = as.factor(cyl), vs = as.factor(vs), am = as.factor(am), gear = as.factor(gear), carb = as.factor(carb))
+fit_All <- lm(mpg ~ ., data = D)
+summary(fit_All)$coef[, 4]
+```
+
+# Still no coefficients with a significant p-value after removing the cyl variable
+```{r}
+which.max(summary(fit_All)$coef[, 4]) 
+fitD <- D %>% select(-cyl); fitRm <- lm(mpg ~ ., data = fitD); summary(fitRm)$coef[, 4]
+```
+
+```{r}
+which.max(summary(fitRm)$coef[, 4]) #the carb variable
+```
+
+```{r}
+summary(fitRm)$coef[, 4]; which.max(summary(fitRm)$coef[, 4]) #the gear variable
+```
+
+### the vs variable
+```{r}
+summary(fitRm)$coef[, 4]; which.max(summary(fitRm)$coef[, 4]) 
+fitD <- fitD %>% select(-vs); fitRm <- lm(mpg ~ ., data = fitD)
+```
+
+### the drat variable
+```{r}
+summary(fitRm)$coef[, 4]; which.max(summary(fitRm)$coef[, 4]) 
+fitD <- fitD %>% select(-drat); fitRm <- lm(mpg ~ ., data = fitD)
+
+```
+### the disp variable
+```{r}
+summary(fitRm)$coef[, 4]; which.max(summary(fitRm)$coef[, 4]) 
+fitD <- fitD %>% select(-disp); fitRm <- lm(mpg ~ ., data = fitD)
+```
+
+### the hp variable
+```{r}
+summary(fitRm)$coef[, 4]; which.max(summary(fitRm)$coef[, 4]) 
+fitD <- fitD %>% select(-hp); fitRm <- lm(mpg ~ ., data = fitD)
+```
+
+
+```{r}
+summary(fitRm)$coef[, 4]
+```
+
+### Clearly the p-values less than 0.05. three coefficients, wt, qseq, and Transmission
+```{r}
+summary(fitRm)
+```
+
+```{r}
+par(mfrow = c(2, 2))
+plot(fitRm)
+```
+
+# The Conclusion:
+       
+    the manual one will have an average of 2.9358 higher miles/gallon than the automatic car
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
