@@ -1,5 +1,5 @@
 ---
-title: "Swiss Fertility Data Exploration"
+title: "Swiss Fertility Data"
 author: "Khalid"
 date: "8/11/2020"
 output: html_document
