@@ -1,0 +1,41 @@
+---
+title: "Swiss Fertility Data Exploration"
+author: "Khalid"
+date: "8/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+This is the final course porject of Coursera Data Science Specialization Course: Developing Data Science Tools.
+
+1. The Swiss Fertility Data (swiss data) can be accessed with **data(swiss)** in R
+2. My GitHub repository contais the codes for Shiny App (**server.R** and **ui.R**) and you could find it [here](https://github.com/khalidm1/datasciencecoursera/tree/master/C%209%20Developing%20Data%20Products)
+3. The Shiny app can be accessed [here](https://khlaidm1.shinyapps.io/swiss/), which contains
+  
+
+```{r}
+data(swiss)
+summary(swiss)
+```
+
+## Histogram
+```{r}
+inputVar <- 'Fertility'; inputBin <- 10; histVal <- swiss[, inputVar]
+hist(histVal, breaks = seq(min(histVal), max(histVal), length.out = inputBin+1),
+     xlab = inputVar, main = paste('Distribution of', inputVar),
+     col = 'darkgray', border = 'white')
+```
+
+## Scatter Plot
+```{r}
+library(ggplot2)
+scatX <- 'Fertility'; scatY <- 'Education'; scatC <- 'Examination'
+ggplot(data = swiss, aes(x = Fertility, y = Education, color = Examination)) + 
+      geom_point() + xlab(scatX) + ylab(scatY) + labs(colour = scatC) +
+      ggtitle(paste('Scatter plot of', scatX, 'vs', scatY)) +
+      theme(plot.title = element_text(hjust = 0.5))
+```
