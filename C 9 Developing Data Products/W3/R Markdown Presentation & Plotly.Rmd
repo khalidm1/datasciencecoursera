@@ -1,0 +1,23 @@
+---
+title: "R Markdown Presentation & Plotly"
+author: "Khalid"
+date: "8/11/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+
+library(plotly)
+```
+## Petal length vs width in each species
+  
+```{r, echo = F}
+suppressPackageStartupMessages(library(plotly))
+plot_ly(iris, x = iris$Petal.Length, y = iris$Petal.Width, 
+        type = 'scatter', mode = 'markers', color = iris$Species) %>% 
+  layout(xaxis = list(title = 'Petal Length'), yaxis = list(title = 'Petal Width'))
+```
+
