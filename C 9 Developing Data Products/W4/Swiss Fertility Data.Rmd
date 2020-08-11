@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This is the final course porject of Coursera Data Science Specialization Course: Developing Data Science Tools.
 
 1. The Swiss Fertility Data (swiss data) can be accessed with **data(swiss)** in R
-2. My GitHub repository contais the codes for Shiny App (**server.R** and **ui.R**) and you could find it [here](https://github.com/khalidm1/datasciencecoursera/tree/master/C%209%20Developing%20Data%20Products)
+2. My GitHub repository contais the codes for Shiny App (**server.R** and **ui.R**) and you could find it [here](https://github.com/khalidm1/datasciencecoursera/tree/master/C%209%20Developing%20Data%20Products/W4/Swiss)
 3. The Shiny app can be accessed [here](https://khlaidm1.shinyapps.io/swiss/), which contains
   
 
